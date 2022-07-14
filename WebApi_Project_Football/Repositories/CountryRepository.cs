@@ -16,6 +16,12 @@ namespace WebApi_Project_Football.Repositories
         {
             _context = context;
         }
+
+        public bool CountryExist(int id)
+        {
+            return _context.Countries.Any(c => c.Id == id);
+        }
+
         public ICollection<Country> GetCountries()
         {
             return _context.Countries.ToList();

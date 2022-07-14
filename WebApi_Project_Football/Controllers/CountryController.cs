@@ -32,5 +32,41 @@ namespace WebApi_Project_Football.Controllers
             return Ok(countries);
         }
 
+        [HttpGet("{id}")]
+        [ProducesResponseType(200, Type = typeof(Country))]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public IActionResult GetCountry(int id)
+        {
+            if (id < 0)
+                return BadRequest();
+
+            if (!_countryRepository.CountryExist(id))
+                return NotFound();
+
+            var country = _countryRepository.GetCountry(id);
+
+            return Ok(country);
+        }
+
+        [HttpGet("{countryId}/leagues")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Country>))]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public IActionResult GetLeaguesFromCountry(int countryId)
+        {
+            if (countryId < 0)
+                return BadRequest();
+
+            if (!_countryRepository.CountryExist(countryId))
+                return NotFound();
+
+            var leagues = _countryRepository.GetLeaguesFromCountry(countryId);
+
+
+            return Ok(leagues);
+
+        }
+
     }
 }
