@@ -33,9 +33,16 @@ namespace WebApi_Project_Football
             services.AddDbContext<AppDbContext>(options =>
                  options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddScoped<ICountryRepository, CountryRepository>();
+            services.AddScoped<ILeagueRepository, LeagueRepository>();
+            services.AddScoped<ITeamRepository, TeamRepository>();
+            services.AddScoped<IPlayerRepository, PlayerRepository>();
 
-            services.AddControllers();
+            services.AddControllersWithViews()
+                     .AddNewtonsoftJson(options =>
+                     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApi_Project_Football", Version = "v1" });

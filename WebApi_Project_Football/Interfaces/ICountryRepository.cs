@@ -9,7 +9,7 @@ namespace WebApi_Project_Football.Interfaces
 {
     public interface ICountryRepository
     {
-        bool CountryExist(int id);
+        bool CountryExists(int id);
         public Country GetCountry(int id);
         ICollection<Country> GetCountries();
         ICollection<League> GetLeaguesFromCountry(int countryId);

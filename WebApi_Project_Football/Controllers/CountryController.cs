@@ -41,7 +41,7 @@ namespace WebApi_Project_Football.Controllers
             if (id < 0)
                 return BadRequest();
 
-            if (!_countryRepository.CountryExist(id))
+            if (!_countryRepository.CountryExists(id))
                 return NotFound();
 
             var country = _countryRepository.GetCountry(id);
@@ -58,7 +58,7 @@ namespace WebApi_Project_Football.Controllers
             if (countryId < 0)
                 return BadRequest();
 
-            if (!_countryRepository.CountryExist(countryId))
+            if (!_countryRepository.CountryExists(countryId))
                 return NotFound();
 
             var leagues = _countryRepository.GetLeaguesFromCountry(countryId);

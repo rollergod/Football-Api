@@ -17,7 +17,7 @@ namespace WebApi_Project_Football.Repositories
             _context = context;
         }
 
-        public bool CountryExist(int id)
+        public bool CountryExists(int id)
         {
             return _context.Countries.Any(c => c.Id == id);
         }
