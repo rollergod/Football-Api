@@ -16,10 +16,14 @@ namespace WebApi_Project_Football.Controllers
     public class TeamController : ControllerBase
     {
         private readonly ITeamRepository _teamRepository;
+        private readonly ILeagueRepository _leagueRepository;
         private readonly IMapper _mapper;
-        public TeamController(ITeamRepository teamRepository, IMapper mapper)
+        public TeamController(ITeamRepository teamRepository,
+                              ILeagueRepository leagueRepository,
+                              IMapper mapper)
         {
             _teamRepository = teamRepository;
+            _leagueRepository = leagueRepository;
             _mapper = mapper;
         }
 
@@ -85,6 +89,39 @@ namespace WebApi_Project_Football.Controllers
             var league = _mapper.Map<LeagueDto>(_teamRepository.GetLeagueFromTeam(teamId));
 
             return Ok(league);
+        }
+
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreateTeam([FromQuery] int leagueId, [FromBody] TeamDto createdTeam)
+        {
+            if (createdTeam == null)
+                return BadRequest();
+
+            var team = _teamRepository.GetTeams()
+                .Where(t => t.TeamName.Trim().ToLower() == createdTeam.TeamName.TrimEnd().ToLower())
+                .FirstOrDefault();
+
+            if(team != null)
+            {
+                ModelState.AddModelError("", "Team уже существует");
+                return StatusCode(422, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var teamMap = _mapper.Map<Team>(createdTeam);
+            teamMap.League = _leagueRepository.GetLeague(leagueId);
+
+            if(!_teamRepository.CreateTeam(teamMap))
+            {
+                ModelState.AddModelError("", "Что-то пошло не так во время сохранения");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Создано успешно");
         }
     }
 }

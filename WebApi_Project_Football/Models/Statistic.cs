@@ -17,6 +17,7 @@ namespace WebApi_Project_Football.Models
         public int RedCards { get; set; }
         public int? CleanSheets { get; set; }
 
-        public Player Player { get; set; }
+        //public Player Player { get; set; }
+        public List<Player> Players { get; set; }
     }
 }

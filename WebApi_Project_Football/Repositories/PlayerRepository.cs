@@ -21,6 +21,12 @@ namespace WebApi_Project_Football.Repositories
             _context = context;
         }
 
+        public bool CreatePlayer(Player player)
+        {
+            _context.Add(player);
+            return SavePlayer();
+        }
+
         public Player GetPlayerById(int id)
         {
             return _context.Players.FirstOrDefault(p => p.Id == id);
@@ -43,16 +49,22 @@ namespace WebApi_Project_Football.Repositories
             return _context.Players.Where(p => p.Id == playerId).Select(p => p.Team).FirstOrDefault();
         }
 
-        public ICollection<PlayerDto> InitialTeamForPlayers(ICollection<PlayerDto> players)
-        {
-            foreach (var player in players)
-                player.Team = GetTeamFromPlayer(player.Id).TeamName;
+        //public ICollection<PlayerDto> InitialTeamForPlayers(ICollection<PlayerDto> players)
+        //{
+        //    foreach (var player in players)
+        //        player.Team = GetTeamFromPlayer(player.Id).TeamName;
 
-            return players;
-        }
+        //    return players;
+        //}
         public bool PlayerExists(int id)
         {
             return _context.Players.Any(p => p.Id == id);
+        }
+
+        public bool SavePlayer()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
         }
     }
 }

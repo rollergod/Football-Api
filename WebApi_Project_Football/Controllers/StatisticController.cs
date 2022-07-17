@@ -53,8 +53,8 @@ namespace WebApi_Project_Football.Controllers
             return Ok(stat);
         } 
 
-        [HttpGet("player/{statId}")]
-        [ProducesResponseType(200, Type = typeof(Player))]
+        [HttpGet("players/{statId}")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Player>))]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         public IActionResult GetPlayerFromStat(int statId)
@@ -65,10 +65,47 @@ namespace WebApi_Project_Football.Controllers
             if (!_statisticRepository.StatisticExists(statId))
                 return NotFound();
 
-            var player = _mapper.Map<PlayerDto>(_statisticRepository.GetPlayerFromStatistic(statId));
+            var players = _mapper.Map<List<PlayerDto>>(_statisticRepository.GetPlayersFromStatistic(statId));
 
-            return Ok(player);
-        } 
+            return Ok(players);
+        }
 
+
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreateStatistic([FromBody] StatisticDto createdStat)
+        {
+            if (createdStat == null)
+                return BadRequest();
+
+            var statistic = _statisticRepository.GetStatistics()
+                .FirstOrDefault(s => (s.GamesPlayed == createdStat.GamesPlayed)
+                && (s.MinutesPlayed == createdStat.MinutesPlayed)
+                && (s.Goals == createdStat.Goals)
+                && (s.Assists == createdStat.Assists)
+                &&(s.YellowCards == createdStat.YellowCards)
+                &&(s.RedCards == createdStat.RedCards));
+
+            if (statistic != null)
+            {
+                ModelState.AddModelError("", "Statistic уже существует");
+                return StatusCode(522, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var statMap = _mapper.Map<Statistic>(createdStat);
+
+            if(!_statisticRepository.CreateStatistic(statMap))
+            {
+                ModelState.AddModelError("", "Что-то пошло не так во время сохранения");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Создано успешно");
+
+        }
     }
 }

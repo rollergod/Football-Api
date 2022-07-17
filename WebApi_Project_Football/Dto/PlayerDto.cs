@@ -13,6 +13,6 @@ namespace WebApi_Project_Football.Dto
         public string LastName { get; set; }
         public string Position { get; set; }
         public int Age { get; set; }
-        public string Team { get; set; }
+        //public string Team { get; set; }
     }
 }

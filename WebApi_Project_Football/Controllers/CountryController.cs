@@ -72,5 +72,37 @@ namespace WebApi_Project_Football.Controllers
 
         }
 
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreateCountry([FromBody] CountryDto countryCreated)
+        {
+            if (countryCreated == null)
+                return BadRequest();
+
+            var country = _countryRepository.GetCountries()
+                .Where(c => c.CountryName.Trim().ToLower() == countryCreated.CountryName.TrimEnd().ToLower())
+                .FirstOrDefault(); // check exists
+
+            if(country != null)
+            {
+                ModelState.AddModelError("", "Country уже существует");
+                return StatusCode(422, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var countryMap = _mapper.Map<Country>(countryCreated);
+
+            if (!_countryRepository.CreateContry(countryMap))
+            {
+                ModelState.AddModelError("", "Что-то пошло не так во время сохранения");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Создано успешно");
+        }
+
     }
 }

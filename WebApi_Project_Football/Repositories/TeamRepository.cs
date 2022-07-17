@@ -16,6 +16,13 @@ namespace WebApi_Project_Football.Repositories
         {
             _context = context;
         }
+
+        public bool CreateTeam(Team team)
+        {
+            _context.Add(team);
+            return SaveTeam();
+        }
+
         public League GetLeagueFromTeam(int teamId)
         {
             return _context.Teams.Where(t => t.Id == teamId).Select(t => t.League).FirstOrDefault();
@@ -34,6 +41,12 @@ namespace WebApi_Project_Football.Repositories
         public ICollection<Team> GetTeams()
         {
             return _context.Teams.ToList();
+        }
+
+        public bool SaveTeam()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
         }
 
         public bool TeamExists(int id)

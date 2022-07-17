@@ -18,9 +18,16 @@ namespace WebApi_Project_Football.Repositories
             _context = context;
         }
 
-        public Player GetPlayerFromStatistic(int statId)
+        public bool CreateStatistic(Statistic statistic)
         {
-            return _context.Statistics.Where(s => s.Id == statId).Select(s => s.Player).FirstOrDefault();
+            _context.Add(statistic);
+            return SaveStatistic();
+        }
+
+        public ICollection<Player> GetPlayersFromStatistic(int statId)
+        {
+            //return _context.Statistics.Where(s => s.Id == statId).Select(s => s.Player).FirstOrDefault();
+            return _context.Players.Where(p => p.StatisticId== statId).ToList();
         }
 
         public Statistic GetStatistic(int id)
@@ -31,6 +38,12 @@ namespace WebApi_Project_Football.Repositories
         public ICollection<Statistic> GetStatistics()
         {
             return _context.Statistics.ToList();
+        }
+
+        public bool SaveStatistic()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
         }
 
         public bool StatisticExists(int id)

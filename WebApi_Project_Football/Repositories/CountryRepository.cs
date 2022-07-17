@@ -22,6 +22,12 @@ namespace WebApi_Project_Football.Repositories
             return _context.Countries.Any(c => c.Id == id);
         }
 
+        public bool CreateContry(Country country)
+        {
+            _context.Add(country);
+            return SaveCountry();
+        }
+
         public ICollection<Country> GetCountries()
         {
             return _context.Countries.ToList();
@@ -35,6 +41,12 @@ namespace WebApi_Project_Football.Repositories
         public ICollection<League> GetLeaguesFromCountry(int countryId)
         {
             return _context.Leagues.Where(c => c.CountryId == countryId).ToList();
+        }
+
+        public bool SaveCountry()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
         }
     }
 }

@@ -18,6 +18,12 @@ namespace WebApi_Project_Football.Repositories
             _context = context;
         }
 
+        public bool CreateLeague(League league)
+        {
+            _context.Add(league);
+            return SaveLeague();
+        }
+
         public League GetLeague(int id)
         {
             return _context.Leagues.FirstOrDefault(x => x.Id == id);
@@ -41,6 +47,12 @@ namespace WebApi_Project_Football.Repositories
         public bool LeagueExists(int id)
         {
             return _context.Leagues.Any(l => l.Id == id);
+        }
+
+        public bool SaveLeague()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
         }
     }
 }

@@ -12,7 +12,9 @@ namespace WebApi_Project_Football.Interfaces
         public bool StatisticExists(int id);
         public ICollection<Statistic> GetStatistics();
         public Statistic GetStatistic(int id);
-        public Player GetPlayerFromStatistic(int statId);
+        public ICollection<Player> GetPlayersFromStatistic(int statId);
+        public bool CreateStatistic(Statistic statistic);
+        public bool SaveStatistic();
         
     }
 }

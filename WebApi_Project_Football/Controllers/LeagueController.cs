@@ -17,15 +17,18 @@ namespace WebApi_Project_Football.Controllers
     {
         private readonly ITeamRepository _teamRepository;
         private readonly ILeagueRepository _leagueRepository;
+        private readonly ICountryRepository _countryRepository;
         private readonly IMapper _mapper;
 
-        public LeagueController(ILeagueRepository leagueRepository, 
-                                ITeamRepository teamRepository, 
-                                IMapper mapper)
+        public LeagueController(ILeagueRepository leagueRepository,
+                                ITeamRepository teamRepository,
+                                IMapper mapper, 
+                                ICountryRepository countryRepository)
         {
             _leagueRepository = leagueRepository;
             _teamRepository = teamRepository;
             _mapper = mapper;
+            _countryRepository = countryRepository;
         }
 
         [HttpGet]
@@ -91,6 +94,48 @@ namespace WebApi_Project_Football.Controllers
             var teams = _mapper.Map<List<TeamDto>>(_leagueRepository.GetTeamsFromLeague(leagueId));
 
             return Ok(teams);
+        }
+
+
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public IActionResult CreateLeague([FromQuery] int countryId,[FromBody] LeagueDto createdLeague)
+        {
+            //if (!_countryRepository.CountryExists(countryId))
+            //{
+            //    //ModelState.AddModelError("", "Country не существует");
+            //    //return StatusCode(422, ModelState);
+            //    return NotFound("Country не существует");
+            //}
+
+            if (createdLeague == null)
+                return BadRequest();
+
+            var league = _leagueRepository.GetLeagues()
+                .Where(l => l.LeagueName.Trim().ToLower() == createdLeague.LeagueName.TrimEnd().ToLower())
+                .FirstOrDefault();
+
+            if(league != null)
+            {
+                ModelState.AddModelError("", "League уже существует");
+                return StatusCode(422, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var leagueMap = _mapper.Map<League>(createdLeague);
+            leagueMap.Country = _countryRepository.GetCountry(countryId);
+
+            if(!_leagueRepository.CreateLeague(leagueMap))
+            {
+                ModelState.AddModelError("", "Что-то пошло не так во время сохранения");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Создано успешно");
         }
     }
 }
