@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebApi_Project_Football.Dto;
 using WebApi_Project_Football.Interfaces;
 using WebApi_Project_Football.Models;
 
@@ -14,10 +16,11 @@ namespace WebApi_Project_Football.Controllers
     public class TeamController : ControllerBase
     {
         private readonly ITeamRepository _teamRepository;
-
-        public TeamController(ITeamRepository teamRepository)
+        private readonly IMapper _mapper;
+        public TeamController(ITeamRepository teamRepository, IMapper mapper)
         {
             _teamRepository = teamRepository;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -25,7 +28,7 @@ namespace WebApi_Project_Football.Controllers
         [ProducesResponseType(400)]
         public IActionResult GetTeams()
         {
-            var teams = _teamRepository.GetTeams();
+            var teams = _mapper.Map<List<TeamDto>>(_teamRepository.GetTeams());
 
             if (teams == null)
                 return BadRequest();
@@ -34,7 +37,7 @@ namespace WebApi_Project_Football.Controllers
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<Team>))]
+        [ProducesResponseType(200, Type = typeof(Team))]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         public IActionResult GetTeamById(int id)
@@ -45,7 +48,7 @@ namespace WebApi_Project_Football.Controllers
             if (!_teamRepository.TeamExists(id))
                 return NotFound();
 
-            var team = _teamRepository.GetTeamById(id);
+            var team = _mapper.Map<TeamDto>(_teamRepository.GetTeamById(id));
 
             return Ok(team);
         }
@@ -62,7 +65,7 @@ namespace WebApi_Project_Football.Controllers
             if (!_teamRepository.TeamExists(teamId))
                 return NotFound();
 
-            var players = _teamRepository.GetPlayersFromTeam(teamId);
+            var players = _mapper.Map<List<PlayerDto>>(_teamRepository.GetPlayersFromTeam(teamId));
 
             return Ok(players);
         }
@@ -79,7 +82,7 @@ namespace WebApi_Project_Football.Controllers
             if (!_teamRepository.TeamExists(teamId))
                 return NotFound();
 
-            var league = _teamRepository.GetLeagueFromTeam(teamId);
+            var league = _mapper.Map<LeagueDto>(_teamRepository.GetLeagueFromTeam(teamId));
 
             return Ok(league);
         }

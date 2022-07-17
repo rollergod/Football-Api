@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebApi_Project_Football.Dto;
 using WebApi_Project_Football.Interfaces;
 using WebApi_Project_Football.Models;
 
@@ -15,11 +17,15 @@ namespace WebApi_Project_Football.Controllers
     {
         private readonly ITeamRepository _teamRepository;
         private readonly ILeagueRepository _leagueRepository;
+        private readonly IMapper _mapper;
 
-        public LeagueController(ILeagueRepository leagueRepository, ITeamRepository teamRepository)
+        public LeagueController(ILeagueRepository leagueRepository, 
+                                ITeamRepository teamRepository, 
+                                IMapper mapper)
         {
             _leagueRepository = leagueRepository;
             _teamRepository = teamRepository;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -27,7 +33,7 @@ namespace WebApi_Project_Football.Controllers
         [ProducesResponseType(400)]
         public IActionResult GetLeagues()
         {
-            var leagues = _leagueRepository.GetLeagues();
+            var leagues = _mapper.Map<List<LeagueDto>>(_leagueRepository.GetLeagues());
 
             if (leagues == null)
                 return BadRequest();
@@ -47,7 +53,7 @@ namespace WebApi_Project_Football.Controllers
             if (!_leagueRepository.LeagueExists(id))
                 return NotFound();
 
-            var league = _leagueRepository.GetLeague(id);
+            var league = _mapper.Map<LeagueDto>(_leagueRepository.GetLeague(id));
 
             return Ok(league);
         }
@@ -65,7 +71,7 @@ namespace WebApi_Project_Football.Controllers
             if (!_teamRepository.TeamExists(teamId))
                 return NotFound();
 
-            var league = _leagueRepository.GetLeagueFromTeam(teamId);
+            var league = _mapper.Map<LeagueDto>(_leagueRepository.GetLeagueFromTeam(teamId));
 
             return Ok(league);
         }
@@ -82,7 +88,7 @@ namespace WebApi_Project_Football.Controllers
             if (!_leagueRepository.LeagueExists(leagueId))
                 return NotFound();
 
-            var teams = _leagueRepository.GetTeamsFromLeague(leagueId);
+            var teams = _mapper.Map<List<TeamDto>>(_leagueRepository.GetTeamsFromLeague(leagueId));
 
             return Ok(teams);
         }

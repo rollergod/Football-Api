@@ -37,6 +37,7 @@ namespace WebApi_Project_Football
             services.AddScoped<ICountryRepository, CountryRepository>();
             services.AddScoped<ILeagueRepository, LeagueRepository>();
             services.AddScoped<ITeamRepository, TeamRepository>();
+            services.AddScoped<IStatisticRepository, StatisticRepository>();
             services.AddScoped<IPlayerRepository, PlayerRepository>();
 
             services.AddControllersWithViews()

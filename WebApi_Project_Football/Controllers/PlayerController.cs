@@ -33,12 +33,9 @@ namespace WebApi_Project_Football.Controllers
             if (players == null)
                 return BadRequest();
 
-            //под вопросом
-            foreach(var player in players)
-            {
-                player.Team = _playerRepository.GetTeamFromPlayer(player.Id).TeamName;
-            }
-
+            //получаем имена клубов
+            players = _playerRepository.InitialTeamForPlayers(players).ToList();
+          
             return Ok(players);
         }
 
@@ -54,7 +51,7 @@ namespace WebApi_Project_Football.Controllers
             if (!_playerRepository.PlayerExists(id))
                 return NotFound();
 
-            var player = _playerRepository.GetPlayerById(id);
+            var player = _mapper.Map<PlayerDto>(_playerRepository.GetPlayerById(id));
 
             return Ok(player);
         }
@@ -71,7 +68,7 @@ namespace WebApi_Project_Football.Controllers
             if (!_playerRepository.PlayerExists(playerId))
                 return NotFound();
 
-            var team = _playerRepository.GetTeamFromPlayer(playerId);
+            var team = _mapper.Map<TeamDto>(_playerRepository.GetTeamFromPlayer(playerId));
 
             return Ok(team);
         }
@@ -88,7 +85,7 @@ namespace WebApi_Project_Football.Controllers
             if (!_playerRepository.PlayerExists(playerId))
                 return NotFound();
 
-            var stat = _playerRepository.GetStatisticFromPlayer(playerId);
+            var stat = _mapper.Map<TeamDto>(_playerRepository.GetStatisticFromPlayer(playerId));
 
             return Ok(stat);
         }
