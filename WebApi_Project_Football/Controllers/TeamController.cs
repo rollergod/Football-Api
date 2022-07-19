@@ -124,7 +124,7 @@ namespace WebApi_Project_Football.Controllers
             return Ok("Создано успешно");
         }
 
-        [HttpPut("{Id}")]
+        [HttpPut("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
@@ -138,7 +138,7 @@ namespace WebApi_Project_Football.Controllers
             if (id != updatedTeam.Id)
                 return BadRequest(ModelState);
 
-            if (_teamRepository.TeamExists(id))
+            if (!_teamRepository.TeamExists(id))
                 return NotFound();
 
             if (!ModelState.IsValid)

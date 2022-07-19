@@ -120,7 +120,7 @@ namespace WebApi_Project_Football.Controllers
             if (id != updatedStatistic.Id)
                 return BadRequest(ModelState);
 
-            if (_statisticRepository.StatisticExists(id))
+            if (!_statisticRepository.StatisticExists(id))
                 return NotFound();
 
             if (!ModelState.IsValid)
