@@ -142,5 +142,42 @@ namespace WebApi_Project_Football.Controllers
 
             return Ok("Создано успешно");
         }
+
+        [HttpPut("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public IActionResult UpdatePlayer(int id,
+                                          [FromQuery] int countryId,
+                                          [FromQuery] int teamId,
+                                          [FromQuery] int statisticId,
+                                          [FromBody] PlayerDto updatedPlayer)
+        {
+            if (updatedPlayer == null)
+                return BadRequest(ModelState);
+
+            if (id != updatedPlayer.Id)
+                return BadRequest(ModelState);
+
+            if (!_playerRepository.PlayerExists(id))
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var playerMap = _mapper.Map<Player>(updatedPlayer);
+
+            playerMap.Country = _countryRepository.GetCountry(countryId);
+            playerMap.Team = _teamRepository.GetTeamById(teamId);
+            playerMap.Statistic = _statRepository.GetStatistic(statisticId);
+
+            if (!_playerRepository.UpdatePlayer(playerMap))
+            {
+                ModelState.AddModelError("", "Что-то пошло не так во время обновления");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
     }
 }

@@ -137,5 +137,38 @@ namespace WebApi_Project_Football.Controllers
 
             return Ok("Создано успешно");
         }
+
+
+        [HttpPut("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public IActionResult UpdateLeague(int id,
+                                          [FromQuery] int countryId,
+                                          [FromBody] LeagueDto updatedLeague)
+        {
+            if (updatedLeague == null)
+                return BadRequest(ModelState);
+
+            if (id != updatedLeague.Id)
+                return BadRequest(ModelState);
+
+            if (!_leagueRepository.LeagueExists(id))
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var leagueMap = _mapper.Map<League>(updatedLeague);
+            leagueMap.Country = _countryRepository.GetCountry(countryId);
+
+            if(!_leagueRepository.UpdateLeague(leagueMap))
+            {
+                ModelState.AddModelError("", "Что-то пошло не так во время обновления");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
     }
 }

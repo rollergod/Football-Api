@@ -14,6 +14,7 @@ namespace WebApi_Project_Football.Interfaces
         public Statistic GetStatistic(int id);
         public ICollection<Player> GetPlayersFromStatistic(int statId);
         public bool CreateStatistic(Statistic statistic);
+        public bool UpdateStatistic(Statistic statistic);
         public bool SaveStatistic();
         
     }

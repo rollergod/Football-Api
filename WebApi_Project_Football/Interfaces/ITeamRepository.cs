@@ -15,6 +15,7 @@ namespace WebApi_Project_Football.Interfaces
         public ICollection<Player> GetPlayersFromTeam(int teamId);
         public League GetLeagueFromTeam(int teamId);
         public bool CreateTeam(Team team);
+        public bool UpdateTeam(Team team);
         public bool SaveTeam();
     }
 }

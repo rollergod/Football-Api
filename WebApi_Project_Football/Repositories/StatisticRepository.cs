@@ -46,6 +46,11 @@ namespace WebApi_Project_Football.Repositories
             return saved > 0 ? true : false;
         }
 
+        public bool UpdateStatistic(Statistic statistic)
+        {
+            _context.Update(statistic);
+            return SaveStatistic();
+        }
         public bool StatisticExists(int id)
         {
             return _context.Statistics.Any(c => c.Id == id);

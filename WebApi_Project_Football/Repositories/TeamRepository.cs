@@ -53,5 +53,11 @@ namespace WebApi_Project_Football.Repositories
         {
             return _context.Teams.Any(t => t.Id == id);
         }
+
+        public bool UpdateTeam(Team team)
+        {
+            _context.Update(team);
+            return SaveTeam();
+        }
     }
 }

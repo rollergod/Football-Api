@@ -123,5 +123,37 @@ namespace WebApi_Project_Football.Controllers
 
             return Ok("Создано успешно");
         }
+
+        [HttpPut("{Id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public IActionResult UpdateTeam(int id,
+                                        [FromQuery] int leagueId,
+                                        [FromBody] TeamDto updatedTeam)
+        {
+            if (updatedTeam == null)
+                return BadRequest(ModelState);
+
+            if (id != updatedTeam.Id)
+                return BadRequest(ModelState);
+
+            if (_teamRepository.TeamExists(id))
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var teamMap = _mapper.Map<Team>(updatedTeam);
+            teamMap.League = _leagueRepository.GetLeague(leagueId);
+
+            if(!_teamRepository.UpdateTeam(teamMap))
+            {
+                ModelState.AddModelError("", "Что-то пошло не так во время сохранения");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
     }
 }

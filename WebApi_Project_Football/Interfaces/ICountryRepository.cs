@@ -14,6 +14,7 @@ namespace WebApi_Project_Football.Interfaces
         ICollection<Country> GetCountries();
         ICollection<League> GetLeaguesFromCountry(int countryId);
         bool CreateContry(Country country);
+        bool UpdateCountry(Country country);
         bool SaveCountry();
     }
 }

@@ -60,7 +60,11 @@ namespace WebApi_Project_Football.Repositories
         {
             return _context.Players.Any(p => p.Id == id);
         }
-
+        public bool UpdatePlayer(Player player)
+        {
+            _context.Update(player);
+            return SavePlayer();
+        }
         public bool SavePlayer()
         {
             var saved = _context.SaveChanges();

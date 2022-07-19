@@ -107,5 +107,34 @@ namespace WebApi_Project_Football.Controllers
             return Ok("Создано успешно");
 
         }
+
+        [HttpPut("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public IActionResult UpdateStatistic(int id,[FromBody] StatisticDto updatedStatistic)
+        {
+            if (updatedStatistic == null)
+                return BadRequest(ModelState);
+
+            if (id != updatedStatistic.Id)
+                return BadRequest(ModelState);
+
+            if (_statisticRepository.StatisticExists(id))
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var statMap = _mapper.Map<Statistic>(updatedStatistic);
+            
+            if(!_statisticRepository.UpdateStatistic(statMap))
+            {
+                ModelState.AddModelError("", "Что-то пошло не так во время сохранения");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
     }
 }

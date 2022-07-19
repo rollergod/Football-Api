@@ -24,7 +24,7 @@ namespace WebApi_Project_Football.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(200,Type = typeof(IEnumerable<Country>))]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Country>))]
         [ProducesResponseType(400)]
         public IActionResult GetCountries()
         {
@@ -84,7 +84,7 @@ namespace WebApi_Project_Football.Controllers
                 .Where(c => c.CountryName.Trim().ToLower() == countryCreated.CountryName.TrimEnd().ToLower())
                 .FirstOrDefault(); // check exists
 
-            if(country != null)
+            if (country != null)
             {
                 ModelState.AddModelError("", "Country уже существует");
                 return StatusCode(422, ModelState);
@@ -102,6 +102,37 @@ namespace WebApi_Project_Football.Controllers
             }
 
             return Ok("Создано успешно");
+        }
+
+
+        [HttpPut("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public IActionResult UpdateCountry(int id, [FromBody] CountryDto updatedCountry)
+        {
+            if (updatedCountry == null)
+                return BadRequest(ModelState);
+
+            if (id != updatedCountry.Id)
+                return BadRequest(ModelState);
+
+            if (!_countryRepository.CountryExists(id))
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var countryMap = _mapper.Map<Country>(updatedCountry);
+
+            if(!_countryRepository.UpdateCountry(countryMap))
+            {
+                ModelState.AddModelError("", "Что-то пошло не так во время обновления");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+
         }
 
     }
