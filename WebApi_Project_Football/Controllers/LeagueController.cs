@@ -170,5 +170,29 @@ namespace WebApi_Project_Football.Controllers
 
             return NoContent();
         }
+
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteLeague(int id)
+        {
+            if (id < 0)
+                return BadRequest();
+
+            if (!_leagueRepository.LeagueExists(id))
+                return NotFound();
+
+            var league = _leagueRepository.GetLeague(id);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (!_leagueRepository.DeleteLeague(league))
+                ModelState.AddModelError("", "Что-то пошло не так во время удаления Player");
+
+            return NoContent();
+        }
     }
 }

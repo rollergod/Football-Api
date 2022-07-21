@@ -16,6 +16,7 @@ namespace WebApi_Project_Football.Interfaces
         public League GetLeagueFromTeam(int teamId);
         public bool CreateTeam(Team team);
         public bool UpdateTeam(Team team);
+        public bool DeleteTeam(Team team);
         public bool SaveTeam();
     }
 }

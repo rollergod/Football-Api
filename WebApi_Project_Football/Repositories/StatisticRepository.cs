@@ -55,5 +55,11 @@ namespace WebApi_Project_Football.Repositories
         {
             return _context.Statistics.Any(c => c.Id == id);
         }
+
+        public bool DeleteStatistic(Statistic statistic)
+        {
+            _context.Remove(statistic);
+            return SaveStatistic();
+        }
     }
 }

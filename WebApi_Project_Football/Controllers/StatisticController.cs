@@ -136,5 +136,29 @@ namespace WebApi_Project_Football.Controllers
 
             return NoContent();
         }
+
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteStatistic(int id)
+        {
+            if (id < 0)
+                return BadRequest();
+
+            if (!_statisticRepository.StatisticExists(id))
+                return NotFound();
+
+            var stat = _statisticRepository.GetStatistic(id);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (!_statisticRepository.DeleteStatistic(stat))
+                ModelState.AddModelError("", "Что-то пошло не так во время удаления Statistic");
+
+            return NoContent();
+        }
     }
 }

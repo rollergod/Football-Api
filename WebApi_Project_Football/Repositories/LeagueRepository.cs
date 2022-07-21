@@ -24,6 +24,12 @@ namespace WebApi_Project_Football.Repositories
             return SaveLeague();
         }
 
+        public bool DeleteLeague(League league)
+        {
+            _context.Remove(league);
+            return SaveLeague();
+        }
+
         public League GetLeague(int id)
         {
             return _context.Leagues.FirstOrDefault(x => x.Id == id);

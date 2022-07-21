@@ -135,5 +135,28 @@ namespace WebApi_Project_Football.Controllers
 
         }
 
+        [HttpDelete("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteCountry(int id)
+        {
+            if (id < 0)
+                return BadRequest();
+
+            if (!_countryRepository.CountryExists(id))
+                return NotFound();
+
+            var country = _countryRepository.GetCountry(id);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (!_countryRepository.DeleteCountry(country))
+                ModelState.AddModelError("", "Что-то пошло не так во время удаления Country");
+
+            return NoContent();
+                
+        }
     }
 }

@@ -70,5 +70,11 @@ namespace WebApi_Project_Football.Repositories
             var saved = _context.SaveChanges();
             return saved > 0 ? true : false;
         }
+
+        public bool DeletePlayer(Player player)
+        {
+            _context.Remove(player);
+            return SavePlayer();
+        }
     }
 }

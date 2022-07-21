@@ -28,6 +28,12 @@ namespace WebApi_Project_Football.Repositories
             return SaveCountry();
         }
 
+        public bool DeleteCountry(Country country)
+        {
+            _context.Remove(country);
+            return SaveCountry();
+        }
+
         public ICollection<Country> GetCountries()
         {
             return _context.Countries.ToList();

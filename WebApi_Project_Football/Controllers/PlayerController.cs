@@ -179,5 +179,28 @@ namespace WebApi_Project_Football.Controllers
 
             return NoContent();
         }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public IActionResult DeletePlayer(int id)
+        {
+            if (id < 0)
+                return BadRequest();
+
+            if (!_playerRepository.PlayerExists(id))
+                return NotFound();
+
+            var player = _playerRepository.GetPlayerById(id);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (!_playerRepository.DeletePlayer(player))
+                ModelState.AddModelError("", "Что-то пошло не так во время удаления Player");
+
+            return NoContent();
+        }
     }
 }

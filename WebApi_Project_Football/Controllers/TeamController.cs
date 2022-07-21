@@ -155,5 +155,29 @@ namespace WebApi_Project_Football.Controllers
 
             return NoContent();
         }
+
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteTeam(int id)
+        {
+            if (id < 0)
+                return BadRequest();
+
+            if (!_teamRepository.TeamExists(id))
+                return NotFound();
+
+            var team = _teamRepository.GetTeamById(id);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (!_teamRepository.DeleteTeam(team))
+                ModelState.AddModelError("", "Что-то пошло не так во время удаления Team");
+
+            return NoContent();
+        }
     }
 }
