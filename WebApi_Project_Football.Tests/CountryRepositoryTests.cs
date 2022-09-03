@@ -41,7 +41,8 @@ namespace WebApi_Project_Football.Tests
         {
             var countries = new List<Country>
             {
-                new Country {Id = 7, CountryName = "Russia" }
+                new Country {Id = 1, CountryName = "Russia" },
+                new Country {Id = 2, CountryName = "Mexico" }
             };
             return countries;
         }
@@ -49,8 +50,8 @@ namespace WebApi_Project_Football.Tests
         {
             var countries = new List<CountryDto>
             {
-                new CountryDto {Id = 7, CountryName = "Russia" },
-                new CountryDto {Id = 7, CountryName = "Russia" }
+                new CountryDto {Id = 1, CountryName = "Russia" },
+                new CountryDto {Id = 2, CountryName = "Mexico" }
             };
             return countries;
         }
