@@ -36,7 +36,30 @@ namespace WebApi_Project_Football.Tests
             Assert.Equal(GetCountriesDto().Count, list.Count);
             Assert.Equal("Russia", list[0].CountryName);
         }
+        
+        [Fact]
+        public void GetCountryById1()
+        {
+            int id = 1;
+            var mock = new Mock<ICountryRepository>();
+            mock.Setup(repo => repo.GetCountry(id)).Returns(GetCountries().FirstOrDefault(country => country.Id == id));
+            mock.Setup(repo => repo.CountryExists(id)).Returns(true);
+            _mapper.Setup(m => m.Map<CountryDto>(mock.Object.GetCountry(id))).Returns(GetCountryById()); 
+            var controller = new CountryController(mock.Object, _mapper.Object);
 
+            var result = controller.GetCountry(id) as OkObjectResult;
+
+
+            var country = result.Value as CountryDto;
+            Assert.Equal("Russia", country.CountryName);
+            Assert.Equal(200, result.StatusCode);
+
+        }
+
+        private CountryDto GetCountryById()
+        {
+            return new CountryDto { Id = 1, CountryName = "Russia" };
+        }
         private List<Country> GetCountries()
         {
             var countries = new List<Country>
