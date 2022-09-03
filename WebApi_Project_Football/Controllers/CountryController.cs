@@ -29,10 +29,10 @@ namespace WebApi_Project_Football.Controllers
         public IActionResult GetCountries()
         {
             var countries = _mapper.Map<List<CountryDto>>(_countryRepository.GetCountries());
-
+            //var countries = _countryRepository.GetCountries();
             if (countries == null)
                 return BadRequest();
-
+             
             return Ok(countries);
         }
 
