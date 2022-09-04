@@ -17,11 +17,11 @@ namespace WebApi_Project_Football.Tests
     {
         //private ICountryRepository _countryRepository;
         private readonly Mock<IMapper> _mapper = new Mock<IMapper>();
+        private readonly Mock<ICountryRepository> mock = new Mock<ICountryRepository>();
         [Fact]
         public void GetCountriesDtoFromRepository()
         {
             //Arrange
-            var mock = new Mock<ICountryRepository>();
             mock.Setup(repo => repo.GetCountries()).Returns(GetCountries());
             _mapper.Setup(m => m.Map<List<CountryDto>>(mock.Object.GetCountries())).Returns(GetCountriesDto());
             var controller = new CountryController(mock.Object,_mapper.Object);
@@ -41,7 +41,6 @@ namespace WebApi_Project_Football.Tests
         public void GetCountryById1()
         {
             int id = 1;
-            var mock = new Mock<ICountryRepository>();
             mock.Setup(repo => repo.GetCountry(id)).Returns(GetCountries().FirstOrDefault(country => country.Id == id));
             mock.Setup(repo => repo.CountryExists(id)).Returns(GetCountries().Any(country => country.Id == id));
             _mapper.Setup(m => m.Map<CountryDto>(mock.Object.GetCountry(id))).Returns(GetCountryById()); 
@@ -59,7 +58,6 @@ namespace WebApi_Project_Football.Tests
         public void GetMethodReturnsNotFound()
         {
             int id = 0;
-            var mock = new Mock<ICountryRepository>();
             mock.Setup(repo => repo.CountryExists(id)).Returns(GetCountries().Any(country => country.Id == id));
             _mapper.Setup(m => m.Map<CountryDto>(mock.Object.GetCountry(id))).Returns(GetCountryById());
             var controller = new CountryController(mock.Object, _mapper.Object);
@@ -74,7 +72,6 @@ namespace WebApi_Project_Football.Tests
         {
             CountryDto newCountry = new CountryDto { Id = 3, CountryName = "Japan" };
             Country Country = new Country { Id = 3, CountryName = "Japan" };
-            var mock = new Mock<ICountryRepository>();
             mock.Setup(repo => repo.GetCountries()).Returns(GetCountries());
             mock.Setup(repo => repo.CreateContry(It.IsAny<Country>())).Returns(true);
             _mapper.Setup(m => m.Map<Country>(newCountry)).Returns(Country);
@@ -89,7 +86,6 @@ namespace WebApi_Project_Football.Tests
         public void PostCountryMethod_ReturnsBadRequest()
         {
             CountryDto newCountryDto = new CountryDto { Id = 4, CountryName = "USA" };
-            var mock = new Mock<ICountryRepository>();
             mock.Setup(repo => repo.GetCountries()).Returns(GetCountries());
             var controller = new CountryController(mock.Object, _mapper.Object);
 
@@ -97,6 +93,7 @@ namespace WebApi_Project_Football.Tests
 
             Assert.Equal(422, result.StatusCode);
         }
+
         private CountryDto GetCountryById()
         {
             return new CountryDto { Id = 1, CountryName = "Russia" };
